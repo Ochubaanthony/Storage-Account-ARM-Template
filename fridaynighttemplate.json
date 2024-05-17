@@ -1,0 +1,72 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {"name of the storage account": {
+        "type": "string",
+        "metadata": {
+            "description": "Enter Storage name"
+        }
+    },
+        "coiltraining": {
+            "type": "string",
+            "metadata": {
+                "description": "visit our web app"
+            }
+        },
+        "Mtn-Nigeria": {
+            "type": "string",
+            "metadata": {
+                "description": "Everywhere you go"
+            }
+        }},
+    "functions": [],
+    "variables": {},
+    "resources": [{
+        "name": "[parameters('name of the storage account')]",
+        "type": "Microsoft.Storage/storageAccounts",
+        "apiVersion": "2023-01-01",
+        "tags": {
+            "displayName": "[parameters('name of the storage account')]"
+        },
+        "location": "[resourceGroup().location]",
+        "kind": "StorageV2",
+        "sku": {
+            "name": "Premium_LRS",
+            "tier": "Premium"
+        }
+    },
+        {
+            "name": "[parameters('coiltraining')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-09-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/appServicePlan1')]": "Resource",
+                "displayName": "[parameters('coiltraining')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('Mtn-Nigeria'))]"
+            ],
+            "properties": {
+                "name": "[parameters('coiltraining')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('Mtn-Nigeria'))]"
+            }
+        },
+        {
+            "name": "[parameters('Mtn-Nigeria')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-09-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "F1",
+                "capacity": 1
+            },
+            "tags": {
+                "displayName": "[parameters('Mtn-Nigeria')]"
+            },
+            "properties": {
+                "name": "[parameters('Mtn-Nigeria')]"
+            }
+        }],
+    "outputs": {}
+}
